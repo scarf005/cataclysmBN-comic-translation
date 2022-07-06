@@ -17,27 +17,16 @@ def is_text(layer: GimpLayer) -> bool:
 class TextLayer:
     _layer: GimpLayer
     name: str = field(init=False)
-    data: TextData = field(init=False)
+    text: str = field(init=False)
 
     def __post_init__(self):
         self.name = str(self._layer.name)
         if (data := self._layer.parasites[0].data) is not None:
-            self.data = TextData.decode(data)
+            self.text = get_text(data.decode())
 
-    @property
-    def text(self) -> str:
-        return self.data.text
 
-    @text.setter
-    def text(self, text: str) -> None:
-        self.data.text = text
-
-    def __repr__(self):
-        return (
-            f"layer: {self.name}"
-            + "\ntextdata:\n"
-            + textwrap.indent(repr(self.data), " ")
-        )
+    def __repr__(self) -> str:
+        return self.text
 
 
 class Project:
@@ -56,4 +45,4 @@ class Project:
 from pathlib import Path
 
 for layer in Project("연재/1화-01.xcf"):
-    print(get_text(data.decode()))
+    print(layer)
