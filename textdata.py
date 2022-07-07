@@ -1,52 +1,64 @@
 import re
 from html.parser import HTMLParser
-from textwrap import dedent
+from typing import Pattern
 
-from flupy import flu
-from numpy import byte
-from typing_extensions import Self
+from gimpformats.gimpXcfDocument import GimpDocument, GimpLayer
 
 STRIP_PARENS = re.compile(r"(?<=\().*(?=\))")
+STRIP_QUOTES = re.compile(r"(?<=\").*(?=\")")
 
 
-def strip_parens(text: str) -> str:
-    if (res := STRIP_PARENS.search(text)) is not None:
+def strip_re(text: str, pattern: Pattern = STRIP_PARENS) -> str:
+    if (res := pattern.search(text)) is not None:
         return res.group()
-    return text
+    else:
+        return text
 
 
 class MarkUpParser(HTMLParser):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.text: str = ""
 
-    def handle_data(self, data: str):
+    def handle_data(self, data: str) -> None:
         self.text += data
 
 
-def get_text(data: str) -> str:
-    raw = data.rstrip("\x00").splitlines()
-    for t in raw:
-        k, v = strip_parens(t).split(" ", 1)
+def parse_text_markup(v: str) -> str:
+    "assumes markup data is always valid"
+    parser = MarkUpParser()
+    parser.feed(v)
+    return parser.text
+
+
+def parse_text(data: str) -> str:
+    for t in data.rstrip("\x00").splitlines():
+        k, raw_v = strip_re(t).split(" ", 1)
+        v = strip_re(raw_v, STRIP_QUOTES)
         match k:
             case "text":
                 return v
             case "markup":
-                v = v.replace("\\", "").replace('"', "")
-                parser = MarkUpParser()
-                parser.feed(v)
-                if len(parser.text) == 0:
-                    raise ValueError(f"{v} is not a valid markup")
-                return parser.text
+                return parse_text_markup(v)
 
     raise ValueError(f"No text found in {data}")
 
 
+def get_text(textlayer: GimpLayer) -> str:
+    "assumes textlayer always contains text as its first parasite"
+    return parse_text(textlayer.parasites[0].data.decode())  # type:ignore
+
+
+def get_texts(project: GimpDocument) -> list[str]:
+    return [get_text(layer) for layer in project.layers if is_text(layer)]
+
+
+def is_text(layer: GimpLayer) -> bool:
+    return "gimp-text-layer" in {p.name for p in layer.parasites}
+
+
 if __name__ == "__main__":
-    from gimpformats.gimpXcfDocument import GimpDocument
+    from pprint import pprint
 
     project = GimpDocument("연재/1화-01.xcf")
-    for layer in project.layers:
-        data: bytearray = layer.parasites[0].data  # type: ignore
-        print(get_text(data.decode()))
-
+    pprint(get_texts(project))
