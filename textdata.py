@@ -49,16 +49,9 @@ def get_text(textlayer: GimpLayer) -> str:
     return parse_text(textlayer.parasites[0].data.decode())  # type:ignore
 
 
-def get_texts(project: GimpDocument) -> list[str]:
-    return [get_text(layer) for layer in project.layers if is_text(layer)]
+def get_texts(project: GimpDocument) -> tuple[str]:
+    return tuple(get_text(layer) for layer in project.layers if is_text(layer))
 
 
 def is_text(layer: GimpLayer) -> bool:
     return "gimp-text-layer" in {p.name for p in layer.parasites}
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-
-    project = GimpDocument("연재/1화-01.xcf")
-    pprint(get_texts(project))
