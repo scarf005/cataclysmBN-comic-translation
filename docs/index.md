@@ -16,4 +16,6 @@
 ## [Chapter 08](Chapter-08.md)
 -->
 
-### [Original Source](https://gall.dcinside.com/mgallery/board/view/?id=gogall_colony&no=27310)
+---
+
+[Original Comics by GOMPAMI](https://gall.dcinside.com/mgallery/board/view/?id=gogall_colony&no=27310)
