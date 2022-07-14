@@ -8,11 +8,11 @@
 
 ## 준비물
 
-- [원본 xcf 파일 (대략 3GB)](../README.md#원본-xcf-파일)
+- [원본 xcf 파일 (대략 3GB)](index.md#원본-xcf-파일)
 - [둘기마요 폰트](https://m.blog.naver.com/oters/221300837221)
 - [GIMP 채신판](https://www.gimp.org)
   - 설치법은 대충 [위키하우](https://ko.wikihow.com/김프-설치하는-법)같은곳에있음
-- [번역 스프레드시트](../README.md#번역-스프레드시트)
+- [번역 스프레드시트](index.md#번역-스프레드시트)
 
 ## 과정
 
