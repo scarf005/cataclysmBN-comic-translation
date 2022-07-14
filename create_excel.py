@@ -1,10 +1,11 @@
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from pathlib import Path
 
 import pandas as pd
 from gimpformats.gimpXcfDocument import GimpDocument
 
 from textdata import get_texts
+
 
 pd.set_option("display.width", 500)
 
@@ -31,7 +32,7 @@ def create_sheet_from(glob: str) -> pd.DataFrame | None:
 
 
 def main() -> None:
-    NUM_CORES = 7
+    NUM_CORES = max(1, cpu_count() - 1)
     it = (f"{i}화" for i in range(1, 8 + 1))
     with Pool(NUM_CORES) as pool, pd.ExcelWriter("번역.xlsx") as writer:
         workbook = writer.book
