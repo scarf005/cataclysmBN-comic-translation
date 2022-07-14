@@ -3,5 +3,6 @@
   "conventionalCommits.promptScopes": false,
   "conventionalCommits.promptFooter": false,
   "conventionalCommits.showNewVersionNotes": false,
-  "conventionalCommits.autoCommit": true
+  "conventionalCommits.autoCommit": true,
+  "python.analysis.typeCheckingMode": "basic"
 }
