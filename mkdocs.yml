@@ -1,3 +1,5 @@
 site_name: "Cataclysm Adventure Journal"
 theme: windmill-dark
 
+extra_css:
+  - extra.css
